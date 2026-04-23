@@ -20,7 +20,7 @@ const ROLE_ROUTES: Record<string, string[]> = {
   '/trucks': ['ADMIN', 'OPERATOR', 'DRIVER'],
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Obtener token del localStorage no es posible en middleware
