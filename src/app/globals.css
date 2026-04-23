@@ -1,0 +1,76 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Colores primarios */
+  --color-indigo: #574AE2;
+  --color-indigo-600: #4a3fd4;
+  --color-indigo-100: #eeecfb;
+  --color-indigo-50: #f6f4fd;
+
+  --color-navy: #222A68;
+  --color-navy-700: #1a2152;
+
+  --color-purple: #654597;
+  --color-purple-50: #f3eefb;
+
+  --color-lavender: #AB81CD;
+  --color-lavender-50: #f6eef9;
+
+  --color-sage: #8FA998;
+  --color-sage-50: #eef3ef;
+
+  /* Neutros */
+  --color-off: #FDFFFC;
+  --color-off-2: #f6f6f2;
+  --color-line: #e6e5ec;
+  --color-line-2: #d5d4dd;
+
+  /* Texto */
+  --color-ink: #222A68;
+  --color-ink-2: #4a537f;
+  --color-muted: #8487a3;
+
+  /* Semánticos */
+  --color-danger: #d84a58;
+  --color-danger-50: #fdecee;
+  --color-warn: #c98a1f;
+  --color-warn-50: #fbf1dd;
+
+  /* Radios */
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+
+  /* Sombras */
+  --shadow-sm: 0 1px 2px rgba(34,42,104,0.06);
+  --shadow: 0 4px 20px -4px rgba(34,42,104,0.12), 0 1px 2px rgba(34,42,104,0.06);
+  --shadow-lg: 0 20px 40px -12px rgba(34,42,104,0.22), 0 4px 12px rgba(34,42,104,0.08);
+}
+
+:root {
+  --background: var(--color-off);
+  --foreground: var(--color-ink);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--color-indigo); text-decoration: none; }
+a:hover { text-decoration: underline; }
+button { font-family: inherit; }
+input, textarea, select { font-family: inherit; font-size: inherit; color: inherit; }
