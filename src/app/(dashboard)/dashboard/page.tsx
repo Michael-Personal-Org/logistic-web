@@ -109,13 +109,13 @@ function MetricCard({
 
 // ─── Role Distribution Bar ────────────────────────────────
 interface RoleBarProps {
-  role: string
+  label: string
   count: number
   total: number
   color: string
 }
 
-function RoleBar({ role, count, total, color }: RoleBarProps) {
+function RoleBar({ label, count, total, color }: RoleBarProps) {
   const pct = total > 0 ? Math.round((count / total) * 100) : 0
   return (
     <div>
@@ -133,7 +133,7 @@ function RoleBar({ role, count, total, color }: RoleBarProps) {
             color,
           }}
         >
-          {role}
+          {label}
         </span>
         <span style={{ fontWeight: 600, fontVariantNumeric: 'tabular-nums', fontSize: 13 }}>
           {count.toLocaleString()}
@@ -408,25 +408,25 @@ export default function DashboardPage() {
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <RoleBar
-                  role="CLIENT"
+                  label="CLIENT"
                   count={clientCount}
                   total={totalUsers}
                   color="var(--color-sage)"
                 />
                 <RoleBar
-                  role="DRIVER"
+                  label="DRIVER"
                   count={driverCount}
                   total={totalUsers}
                   color="var(--color-lavender)"
                 />
                 <RoleBar
-                  role="OPERATOR"
+                  label="OPERATOR"
                   count={operatorCount}
                   total={totalUsers}
                   color="var(--color-purple)"
                 />
                 <RoleBar
-                  role="ADMIN"
+                  label="ADMIN"
                   count={adminCount}
                   total={totalUsers}
                   color="var(--color-indigo)"
