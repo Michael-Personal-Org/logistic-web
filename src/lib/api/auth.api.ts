@@ -65,4 +65,31 @@ export const authApi = {
     const res = await apiClient.post<{ data: LoginResponse }>('/auth/2fa/verify', data)
     return res.data.data
   },
+
+  enable2FA: async (): Promise<{ secret: string; qrCode: string }> => {
+    const res = await apiClient.post<{ data: { secret: string; qrCode: string } }>(
+      '/auth/2fa/enable'
+    )
+    return res.data.data
+  },
+
+  verify2FASetup: async (code: string): Promise<{ message: string }> => {
+    const res = await apiClient.post<{ data: { message: string } }>('/auth/2fa/verify-setup', {
+      code,
+    })
+    return res.data.data
+  },
+
+  disable2FA: async (code: string): Promise<{ message: string }> => {
+    const res = await apiClient.post<{ data: { message: string } }>('/auth/2fa/disable', { code })
+    return res.data.data
+  },
+
+  changePassword: async (data: {
+    currentPassword: string
+    newPassword: string
+  }): Promise<{ message: string }> => {
+    const res = await apiClient.post<{ data: { message: string } }>('/auth/change-password', data)
+    return res.data.data
+  },
 }
