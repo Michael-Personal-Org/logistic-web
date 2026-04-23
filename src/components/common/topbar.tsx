@@ -171,9 +171,18 @@ export function Topbar({ title, crumbs }: TopbarProps) {
         {/* Dropdown */}
         {menuOpen && (
           <>
-            <div
-              style={{ position: 'fixed', inset: 0, zIndex: 30 }}
+            <button
+              type="button"
+              aria-label="Cerrar menú"
               onClick={() => setMenuOpen(false)}
+              style={{
+                position: 'fixed',
+                inset: 0,
+                zIndex: 30,
+                background: 'transparent',
+                border: 'none',
+                cursor: 'default',
+              }}
             />
             <div
               style={{
