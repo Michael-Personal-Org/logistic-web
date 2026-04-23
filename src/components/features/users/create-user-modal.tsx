@@ -90,7 +90,9 @@ export function CreateUserModal({ onClose }: CreateUserModalProps) {
     <button
       type="button"
       aria-label="Cerrar modal"
-      onClick={onClose}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose()
+      }}
       style={{
         position: 'fixed',
         inset: 0,
@@ -115,8 +117,6 @@ export function CreateUserModal({ onClose }: CreateUserModalProps) {
           boxShadow: 'var(--shadow-lg)',
           overflow: 'hidden',
         }}
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => e.stopPropagation()}
       >
         {/* Head */}
         <div style={{ padding: '20px 22px 12px' }}>

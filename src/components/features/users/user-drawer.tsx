@@ -45,7 +45,9 @@ export function UserDrawer({ user, onClose, isAdmin }: UserDrawerProps) {
     <button
       type="button"
       aria-label="Cerrar panel"
-      onClick={onClose}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose()
+      }}
       style={{
         position: 'fixed',
         inset: 0,
@@ -68,8 +70,6 @@ export function UserDrawer({ user, onClose, isAdmin }: UserDrawerProps) {
           display: 'flex',
           flexDirection: 'column',
         }}
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => e.stopPropagation()}
       >
         {/* Head */}
         <div
