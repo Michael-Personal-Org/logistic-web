@@ -87,7 +87,10 @@ export function CreateUserModal({ onClose }: CreateUserModalProps) {
   }
 
   return (
-    <div
+    <button
+      type="button"
+      aria-label="Cerrar modal"
+      onClick={onClose}
       style={{
         position: 'fixed',
         inset: 0,
@@ -98,8 +101,10 @@ export function CreateUserModal({ onClose }: CreateUserModalProps) {
         justifyContent: 'center',
         padding: 24,
         zIndex: 50,
+        border: 'none',
+        cursor: 'default',
+        width: '100%',
       }}
-      onClick={onClose}
     >
       <div
         style={{
@@ -111,6 +116,7 @@ export function CreateUserModal({ onClose }: CreateUserModalProps) {
           overflow: 'hidden',
         }}
         onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
       >
         {/* Head */}
         <div style={{ padding: '20px 22px 12px' }}>
@@ -155,7 +161,7 @@ export function CreateUserModal({ onClose }: CreateUserModalProps) {
           >
             {/* Role selector */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <label style={labelStyle}>Rol</label>
+              <div style={labelStyle}>Rol</div>
               <div style={{ display: 'flex', gap: 8 }}>
                 {ROLES.map((r) => (
                   <button
@@ -311,6 +317,6 @@ export function CreateUserModal({ onClose }: CreateUserModalProps) {
           </div>
         </form>
       </div>
-    </div>
+    </button>
   )
 }

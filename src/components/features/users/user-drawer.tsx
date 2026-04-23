@@ -42,7 +42,10 @@ export function UserDrawer({ user, onClose, isAdmin }: UserDrawerProps) {
   }
 
   return (
-    <div
+    <button
+      type="button"
+      aria-label="Cerrar panel"
+      onClick={onClose}
       style={{
         position: 'fixed',
         inset: 0,
@@ -51,8 +54,10 @@ export function UserDrawer({ user, onClose, isAdmin }: UserDrawerProps) {
         display: 'flex',
         justifyContent: 'flex-end',
         zIndex: 50,
+        border: 'none',
+        cursor: 'default',
+        width: '100%',
       }}
-      onClick={onClose}
     >
       <div
         style={{
@@ -64,6 +69,7 @@ export function UserDrawer({ user, onClose, isAdmin }: UserDrawerProps) {
           flexDirection: 'column',
         }}
         onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
       >
         {/* Head */}
         <div
@@ -164,15 +170,9 @@ export function UserDrawer({ user, onClose, isAdmin }: UserDrawerProps) {
             </div>
           </div>
 
-          {/* Change role — solo ADMIN, solo sobre no-ADMIN */}
+          {/* Change role */}
           {isAdmin && !isAdminUser && (
-            <div
-              style={{
-                padding: 14,
-                border: '1px solid var(--color-line)',
-                borderRadius: 8,
-              }}
-            >
+            <div style={{ padding: 14, border: '1px solid var(--color-line)', borderRadius: 8 }}>
               <div
                 style={{
                   fontSize: 14,
@@ -232,7 +232,7 @@ export function UserDrawer({ user, onClose, isAdmin }: UserDrawerProps) {
             </div>
           )}
 
-          {/* Toggle status — solo ADMIN, solo sobre no-ADMIN */}
+          {/* Toggle status */}
           {isAdmin && !isAdminUser && (
             <div
               style={{
@@ -252,11 +252,11 @@ export function UserDrawer({ user, onClose, isAdmin }: UserDrawerProps) {
                   {isActive ? 'Puede iniciar sesión' : 'Acceso bloqueado'}
                 </div>
               </div>
-              {/* Toggle */}
               <button
                 type="button"
                 onClick={handleStatusToggle}
                 disabled={updateStatus.isPending}
+                aria-label={isActive ? 'Suspender cuenta' : 'Reactivar cuenta'}
                 style={{
                   position: 'relative',
                   width: 38,
@@ -268,7 +268,6 @@ export function UserDrawer({ user, onClose, isAdmin }: UserDrawerProps) {
                   flexShrink: 0,
                   transition: 'background .2s',
                 }}
-                aria-label={isActive ? 'Suspender cuenta' : 'Reactivar cuenta'}
               >
                 <span
                   style={{
@@ -336,6 +335,6 @@ export function UserDrawer({ user, onClose, isAdmin }: UserDrawerProps) {
           )}
         </div>
       </div>
-    </div>
+    </button>
   )
 }

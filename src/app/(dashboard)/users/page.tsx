@@ -7,7 +7,7 @@ import { RoleBadge, StatusBadge } from '@/components/common/status-badge'
 import { Topbar } from '@/components/common/topbar'
 import { CreateUserModal } from '@/components/features/users/create-user-modal'
 import { UserDrawer } from '@/components/features/users/user-drawer'
-import { useChangeUserRole, useUpdateUserStatus, useUsers } from '@/lib/hooks/use-users'
+import { useUsers } from '@/lib/hooks/use-users'
 import { useAuthStore } from '@/lib/stores/auth.store'
 import type { UserRole, UserStatus, UserSummary } from '@/lib/types/user.types'
 
@@ -319,6 +319,7 @@ export default function UsersPage() {
                     <td
                       style={{ padding: '12px 16px', textAlign: 'right' }}
                       onClick={(e) => e.stopPropagation()}
+                      onKeyDown={(e) => e.stopPropagation()}
                     >
                       <button
                         type="button"
