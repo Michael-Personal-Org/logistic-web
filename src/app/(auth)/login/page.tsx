@@ -8,7 +8,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { AuthHero } from '@/app/(auth)/auth-hero'
+import { AuthHero } from '@/components/features/auth/auth-hero'
 
 import { authApi } from '@/lib/api/auth.api'
 import { useAuthStore } from '@/lib/stores/auth.store'
