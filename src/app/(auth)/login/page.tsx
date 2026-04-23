@@ -110,7 +110,10 @@ export default function LoginPage() {
           >
             {/* Email */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <label style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--color-ink)' }}>
+              <label
+                htmlFor="email"
+                style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--color-ink)' }}
+              >
                 Email
               </label>
               <div style={{ position: 'relative' }}>
@@ -126,6 +129,7 @@ export default function LoginPage() {
                   }}
                 />
                 <input
+                  id="email"
                   {...register('email')}
                   type="email"
                   placeholder="tu@empresa.com"
@@ -154,7 +158,10 @@ export default function LoginPage() {
               <div
                 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
               >
-                <label style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--color-ink)' }}>
+                <label
+                  htmlFor="password"
+                  style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--color-ink)' }}
+                >
                   Contraseña
                 </label>
                 <Link
@@ -177,6 +184,7 @@ export default function LoginPage() {
                   }}
                 />
                 <input
+                  id="password"
                   {...register('password')}
                   type={showPw ? 'text' : 'password'}
                   placeholder="••••••••"
@@ -260,6 +268,7 @@ export default function LoginPage() {
 
           {/* SSO */}
           <button
+            type="button"
             style={{
               display: 'flex',
               alignItems: 'center',
