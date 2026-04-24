@@ -1,23 +1,15 @@
 'use client'
 
-import { Plus, Search, Truck, X } from 'lucide-react'
+import { Plus, Search, X } from 'lucide-react'
 import { useState } from 'react'
 import { PageHeader } from '@/components/common/page-header'
 import { Topbar } from '@/components/common/topbar'
 import { CreateTruckModal } from '@/components/features/trucks/create-truck-modal'
 import { TruckDrawer } from '@/components/features/trucks/truck-drawer'
+import { TrucksTable } from '@/components/features/trucks/trucks-table'
 import { useTrucks } from '@/lib/hooks/use-trucks'
 import { useAuthStore } from '@/lib/stores/auth.store'
-import type { CargoType, Truck as TruckType } from '@/lib/types/truck.types'
-
-const CARGO_LABELS: Record<CargoType, string> = {
-  GENERAL: 'General',
-  FRAGILE: 'Frágil',
-  CHEMICAL: 'Químico',
-  TEXTILE: 'Textil',
-  REFRIGERATED: 'Refrigerado',
-  HAZARDOUS: 'Peligroso',
-}
+import type { CargoType, Truck } from '@/lib/types/truck.types'
 
 const CARGO_COLORS: Record<CargoType, { bg: string; color: string }> = {
   GENERAL: { bg: 'var(--color-indigo-100)', color: 'var(--color-indigo)' },
@@ -26,6 +18,15 @@ const CARGO_COLORS: Record<CargoType, { bg: string; color: string }> = {
   TEXTILE: { bg: 'var(--color-lavender-50)', color: 'var(--color-purple)' },
   REFRIGERATED: { bg: 'var(--color-sage-50)', color: '#4d6a55' },
   HAZARDOUS: { bg: 'var(--color-danger-50)', color: 'var(--color-danger)' },
+}
+
+const CARGO_LABELS: Record<CargoType, string> = {
+  GENERAL: 'General',
+  FRAGILE: 'Frágil',
+  CHEMICAL: 'Químico',
+  TEXTILE: 'Textil',
+  REFRIGERATED: 'Refrigerado',
+  HAZARDOUS: 'Peligroso',
 }
 
 export function CargoBadge({ type }: { type: CargoType }) {
@@ -48,26 +49,12 @@ export function CargoBadge({ type }: { type: CargoType }) {
   )
 }
 
-const btnStyle = (primary?: boolean) => ({
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: 6,
-  padding: '8px 14px',
-  background: primary ? 'var(--color-indigo)' : 'var(--color-off)',
-  color: primary ? '#fff' : 'var(--color-ink)',
-  border: `1px solid ${primary ? 'var(--color-indigo)' : 'var(--color-line-2)'}`,
-  borderRadius: 6,
-  fontSize: 13.5,
-  fontWeight: 600,
-  cursor: 'pointer',
-})
-
 export default function TrucksPage() {
   const user = useAuthStore((s) => s.user)
   const [q, setQ] = useState('')
   const [availFilter, setAvailFilter] = useState<'all' | 'true' | 'false'>('all')
   const [showCreate, setShowCreate] = useState(false)
-  const [selected, setSelected] = useState<TruckType | null>(null)
+  const [selected, setSelected] = useState<Truck | null>(null)
 
   const isStaff = user?.role === 'ADMIN' || user?.role === 'OPERATOR'
   const isAdmin = user?.role === 'ADMIN'
@@ -80,11 +67,9 @@ export default function TrucksPage() {
   const filtered =
     data?.trucks.filter((t) => {
       if (!q) return true
-      const search = q.toLowerCase()
-      return t.plateNumber.toLowerCase().includes(search) || t.model.toLowerCase().includes(search)
+      const s = q.toLowerCase()
+      return t.plateNumber.toLowerCase().includes(s) || t.model.toLowerCase().includes(s)
     }) ?? []
-
-  const hasFilters = q || availFilter !== 'all'
 
   return (
     <>
@@ -95,7 +80,23 @@ export default function TrucksPage() {
           subtitle={`${data?.total ?? 0} camiones en la flota`}
           actions={
             isStaff ? (
-              <button type="button" style={btnStyle(true)} onClick={() => setShowCreate(true)}>
+              <button
+                type="button"
+                onClick={() => setShowCreate(true)}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  padding: '8px 14px',
+                  background: 'var(--color-indigo)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 6,
+                  fontSize: 13.5,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                }}
+              >
                 <Plus size={15} /> Registrar camión
               </button>
             ) : undefined
@@ -145,7 +146,6 @@ export default function TrucksPage() {
               }}
             />
           </div>
-
           <select
             value={availFilter}
             onChange={(e) => setAvailFilter(e.target.value as 'all' | 'true' | 'false')}
@@ -164,8 +164,7 @@ export default function TrucksPage() {
             <option value="true">Disponibles</option>
             <option value="false">Ocupados</option>
           </select>
-
-          {hasFilters && (
+          {(q || availFilter !== 'all') && (
             <button
               type="button"
               onClick={() => {
@@ -179,7 +178,6 @@ export default function TrucksPage() {
                 padding: '6px 10px',
                 background: 'transparent',
                 border: 'none',
-                borderRadius: 6,
                 fontSize: 12.5,
                 color: 'var(--color-muted)',
                 cursor: 'pointer',
@@ -190,204 +188,18 @@ export default function TrucksPage() {
           )}
         </div>
 
-        {/* Table */}
-        <div
-          style={{
-            border: '1px solid var(--color-line)',
-            borderRadius: 10,
-            overflow: 'hidden',
-            background: 'var(--color-off)',
-          }}
-        >
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr>
-                {['Camión', 'Capacidad', 'Tipos de carga', 'Estado', ''].map((h) => (
-                  <th
-                    key={h}
-                    style={{
-                      textAlign: 'left',
-                      padding: '12px 16px',
-                      background: 'var(--color-off-2)',
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: 11,
-                      fontWeight: 600,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.06em',
-                      color: 'var(--color-muted)',
-                      borderBottom: '1px solid var(--color-line)',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {isLoading ? (
-                <tr>
-                  <td
-                    colSpan={5}
-                    style={{
-                      padding: '32px 16px',
-                      textAlign: 'center',
-                      color: 'var(--color-muted)',
-                      fontSize: 13,
-                    }}
-                  >
-                    Cargando camiones...
-                  </td>
-                </tr>
-              ) : filtered.length === 0 ? (
-                <tr>
-                  <td colSpan={5} style={{ padding: '48px 16px', textAlign: 'center' }}>
-                    <div
-                      style={{
-                        width: 48,
-                        height: 48,
-                        borderRadius: 12,
-                        background: 'var(--color-indigo-100)',
-                        color: 'var(--color-indigo)',
-                        display: 'grid',
-                        placeItems: 'center',
-                        margin: '0 auto 12px',
-                      }}
-                    >
-                      <Truck size={22} />
-                    </div>
-                    <div style={{ fontWeight: 600, color: 'var(--color-ink)', marginBottom: 4 }}>
-                      No hay camiones
-                    </div>
-                    <div style={{ fontSize: 13, color: 'var(--color-muted)' }}>
-                      {isStaff
-                        ? 'Registra el primer camión de la flota.'
-                        : 'No tienes camiones asignados aún.'}
-                    </div>
-                  </td>
-                </tr>
-              ) : (
-                filtered.map((truck, i) => (
-                  <tr
-                    key={truck.id}
-                    onClick={() => setSelected(truck)}
-                    style={{
-                      borderTop: i === 0 ? 'none' : '1px solid var(--color-line)',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    {/* Camión */}
-                    <td style={{ padding: '12px 16px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <div
-                          style={{
-                            width: 34,
-                            height: 34,
-                            borderRadius: 8,
-                            background: 'var(--color-indigo-100)',
-                            color: 'var(--color-indigo)',
-                            display: 'grid',
-                            placeItems: 'center',
-                            flexShrink: 0,
-                          }}
-                        >
-                          <Truck size={16} />
-                        </div>
-                        <div>
-                          <div
-                            style={{
-                              fontWeight: 700,
-                              fontSize: 13.5,
-                              color: 'var(--color-ink)',
-                              fontFamily: 'var(--font-mono)',
-                            }}
-                          >
-                            {truck.plateNumber}
-                          </div>
-                          <div style={{ fontSize: 12, color: 'var(--color-muted)' }}>
-                            {truck.model}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-
-                    {/* Capacidad */}
-                    <td style={{ padding: '12px 16px', fontSize: 13, color: 'var(--color-ink-2)' }}>
-                      {truck.capacity}
-                    </td>
-
-                    {/* Tipos de carga */}
-                    <td style={{ padding: '12px 16px' }}>
-                      <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                        {truck.allowedCargoTypes.map((type) => (
-                          <CargoBadge key={type} type={type} />
-                        ))}
-                      </div>
-                    </td>
-
-                    {/* Estado */}
-                    <td style={{ padding: '12px 16px' }}>
-                      <span
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: 5,
-                          padding: '2px 8px',
-                          fontSize: 11.5,
-                          fontWeight: 600,
-                          borderRadius: 999,
-                          background: truck.isAvailable
-                            ? 'var(--color-sage-50)'
-                            : 'var(--color-off-2)',
-                          color: truck.isAvailable ? '#4d6a55' : 'var(--color-muted)',
-                        }}
-                      >
-                        <span
-                          style={{
-                            width: 6,
-                            height: 6,
-                            borderRadius: 999,
-                            background: 'currentColor',
-                          }}
-                        />
-                        {truck.isAvailable ? 'Disponible' : 'Ocupado'}
-                      </span>
-                    </td>
-
-                    {/* Actions */}
-                    <td
-                      style={{ padding: '12px 16px', textAlign: 'right' }}
-                      onClick={(e) => e.stopPropagation()}
-                      onKeyDown={(e) => e.stopPropagation()}
-                    >
-                      <button
-                        type="button"
-                        onClick={() => setSelected(truck)}
-                        style={{
-                          padding: '5px 10px',
-                          background: 'transparent',
-                          border: '1px solid var(--color-line-2)',
-                          borderRadius: 5,
-                          fontSize: 12.5,
-                          color: 'var(--color-ink-2)',
-                          cursor: 'pointer',
-                        }}
-                      >
-                        Ver
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+        <TrucksTable
+          trucks={filtered}
+          isLoading={isLoading}
+          isStaff={isStaff}
+          onSelect={setSelected}
+        />
 
         <div
           style={{
             marginTop: 12,
-            fontSize: 11.5,
             fontFamily: 'var(--font-mono)',
+            fontSize: 11.5,
             color: 'var(--color-muted)',
           }}
         >
