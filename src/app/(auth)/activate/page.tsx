@@ -3,6 +3,7 @@
 import { BadgeCheck, CheckCircle, Clock, Mail, XCircle } from 'lucide-react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 import { Logo } from '@/components/common/logo'
 
 type Variant = 'success' | 'error' | 'already' | 'expired' | 'sent'
@@ -67,7 +68,7 @@ const variants: Record<
   },
 }
 
-export default function ActivatePage() {
+function ActivateContent() {
   const searchParams = useSearchParams()
   const variant = (searchParams.get('variant') ?? 'success') as Variant
   const v = variants[variant] ?? variants.success
@@ -159,5 +160,13 @@ export default function ActivatePage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function ActivatePage() {
+  return (
+    <Suspense fallback={null}>
+      <ActivateContent />
+    </Suspense>
   )
 }

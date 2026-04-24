@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowRight, Clock } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -35,7 +35,19 @@ const barColor = (score: number, i: number) => {
   return 'var(--color-sage)'
 }
 
-export default function ResetPasswordPage() {
+const inputStyle = (hasError?: boolean) => ({
+  width: '100%',
+  padding: '10px 12px',
+  background: 'var(--color-off)',
+  border: `1px solid ${hasError ? 'var(--color-danger)' : 'var(--color-line-2)'}`,
+  borderRadius: 6,
+  fontSize: 14,
+  color: 'var(--color-ink)',
+  outline: 'none',
+  boxSizing: 'border-box' as const,
+})
+
+function ResetPasswordContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
@@ -74,7 +86,6 @@ export default function ResetPasswordPage() {
     }
   }
 
-  // Token inválido o expirado
   if (!token) {
     return (
       <>
@@ -142,7 +153,6 @@ export default function ResetPasswordPage() {
                 color: 'var(--color-ink-2)',
                 borderRadius: 6,
                 fontSize: 13.5,
-                fontWeight: 500,
                 textDecoration: 'none',
                 textAlign: 'center',
               }}
@@ -182,7 +192,6 @@ export default function ResetPasswordPage() {
           <p style={{ fontSize: 13.5, color: 'var(--color-muted)', margin: '0 0 24px' }}>
             Elige una contraseña segura para tu cuenta.
           </p>
-
           <form
             onSubmit={handleSubmit(onSubmit)}
             style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
@@ -199,17 +208,7 @@ export default function ResetPasswordPage() {
                 {...register('password')}
                 type="password"
                 placeholder="Mínimo 8 caracteres"
-                style={{
-                  width: '100%',
-                  padding: '10px 12px',
-                  background: 'var(--color-off)',
-                  border: `1px solid ${errors.password ? 'var(--color-danger)' : 'var(--color-line-2)'}`,
-                  borderRadius: 6,
-                  fontSize: 14,
-                  color: 'var(--color-ink)',
-                  outline: 'none',
-                  boxSizing: 'border-box',
-                }}
+                style={inputStyle(!!errors.password)}
               />
               <div style={{ display: 'flex', gap: 4 }}>
                 {[0, 1, 2, 3].map((i) => (
@@ -244,17 +243,7 @@ export default function ResetPasswordPage() {
                 {...register('confirmPassword')}
                 type="password"
                 placeholder="Repite tu contraseña"
-                style={{
-                  width: '100%',
-                  padding: '10px 12px',
-                  background: 'var(--color-off)',
-                  border: `1px solid ${errors.confirmPassword ? 'var(--color-danger)' : 'var(--color-line-2)'}`,
-                  borderRadius: 6,
-                  fontSize: 14,
-                  color: 'var(--color-ink)',
-                  outline: 'none',
-                  boxSizing: 'border-box',
-                }}
+                style={inputStyle(!!errors.confirmPassword)}
               />
               {errors.confirmPassword && (
                 <span style={{ fontSize: 12, color: 'var(--color-danger)' }}>
@@ -282,7 +271,7 @@ export default function ResetPasswordPage() {
                 marginTop: 4,
               }}
             >
-              {loading ? 'Guardando...' : 'Guardar contraseña'}{' '}
+              {loading ? 'Guardando...' : 'Guardar contraseña'}
               {!loading && <ArrowRight size={16} />}
             </button>
             <p style={{ fontSize: 12, color: 'var(--color-muted)', margin: 0 }}>
@@ -292,5 +281,13 @@ export default function ResetPasswordPage() {
         </div>
       </div>
     </>
+  )
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={null}>
+      <ResetPasswordContent />
+    </Suspense>
   )
 }
