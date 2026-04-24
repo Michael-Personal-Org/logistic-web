@@ -9,6 +9,7 @@ const PUBLIC_ROUTES = [
   '/reset-password',
   '/activate',
   '/2fa',
+  '/unauthorized',
 ]
 
 // Rutas solo para ciertos roles
@@ -47,7 +48,7 @@ export function proxy(request: NextRequest) {
     )?.[1]
 
     if (requiredRoles && !requiredRoles.includes(role)) {
-      return NextResponse.redirect(new URL('/dashboard', request.url))
+      return NextResponse.redirect(new URL('/unauthorized', request.url))
     }
   }
 
